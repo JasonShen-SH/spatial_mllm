@@ -12,13 +12,9 @@ pip install -r requirements.txt
 ```
 
 # 数据准备
-# MeViS
 
-# Ref-YTVOS
+下载命令如下
 
-# 
-
-请下载训练数据集，除了我们自己构建的空间数据集之外，其余部分数据集来自[Sa2VA](https://github.com/magic-research/Sa2VA)所使用数据集，下载命令如下
 ```shell
 sudo apt-get install git-lfs
 git lfs install
@@ -28,20 +24,30 @@ git clone https://huggingface.co/datasets/Dense-World/Sa2VA-Training
 git lfs pull
 
 # 下载后的存储路径可更改, 本例为: /home/volume_shared/share_datasets
-
-# MeViS
-
 ```
+
+下载完成的界面将如下图所示：
+![训练数据集](screenshot.png)
+
+只需要解压其中的
+```shell
+ref_seg_coco.zip, 
+ref_seg_coco_g.zip，
+ref_seg_coco_+.zip，
+video_datas_mevis.zip，
+video_datas_rvos.zip 
+其余Image Video QA数据集暂时不用
+```
+
+注意，由于ReVOS在上述链接中不完整，因此只能手动下载
+[ReVOS](https://mailsjlueducn-my.sharepoint.com/personal/yancl9918_mails_jlu_edu_cn/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fyancl9918%5Fmails%5Fjlu%5Fedu%5Fcn%2FDocuments%2Fdataset%2Frevos%5Feccv%5Fdataset%2FReVOS&ga=1)，
+并与上述文件放置在同一位置
+
 
 请在配置文件 projects/llava_sam2/configs/sa2va_8b_spatial.py 中同步修改， 示例如下
 
-注意,ReVOS需要手动下载, 因为下载数据包不全
-[ReVOS](https://mailsjlueducn-my.sharepoint.com/personal/yancl9918_mails_jlu_edu_cn/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fyancl9918%5Fmails%5Fjlu%5Fedu%5Fcn%2FDocuments%2Fdataset%2Frevos%5Feccv%5Fdataset%2FReVOS&ga=1)
-
 ```shell
 ################### refer image seg ####################
-# 以RefCOCO系列为主
-
 # RefCOCO, RefCOCOg, RefCOCO+
 
 # 已经通过dataset处理, 将mask转为box
@@ -49,9 +55,9 @@ git lfs pull
 ################### refer video seg ####################
 
 # 请注意，对于Ref/Reason-VOS数据集，我们不使用它们的mask，而是使用转换后的box
-# 它们的box.json同统一保存在mask_to_box这个folder下, 在home目录下
+# 它们的box.json统一保存在mask_to_box下, 它是home目录的一个subfolder
 
-# ReVOS (VISA中提出的Reasoning Video Segmentation数据集)
+# ReVOS 
 data_root_revos = '/home/volume_shared/share_datasets/ReVOS/'
 video_revos_image_folder = data_root_revos + 'JPEGImages'
 video_revos_expression_file = data_root_revos + 'meta_expressions_train_.json'
@@ -71,11 +77,9 @@ video_refytvos_box_file = 'mask_to_box/ref_ytvos_bbox.json'
 # 注意, ref_ytvos的expression需要用改动后的(ref_ytvos_expressions.json), 因为原始的没有anno_id
 ```
 
-下面介绍我们的空间位置关系数据集，数据来源是VOS数据集，包括MOSE, DAVIS17, YTVOS19, LVOS(v1&v2)，以及SA-V的sav_001到sav_010
+下面介绍我们的空间位置关系数据集，数据来源是各类VOS数据集，包括MOSE, DAVIS17, YTVOS19, LVOS(v1&v2)，以及SA-V的sav_001到sav_010
 
-由于目前是第二批，所以我命名为all_vos2
-
-这些数据 (all_vos2) 的JPEGImages，我打包上传到了百度网盘
+由于目前是第二批，所以我命名为all_vos2，其中JPEGImages部分，我打包上传到了百度网盘
 
 您也可以手动下载每个数据集，将它们的JPEGImages拼接在一起即可
 [MOSE](https://entuedu-my.sharepoint.com/personal/liuc0058_e_ntu_edu_sg/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fliuc0058%5Fe%5Fntu%5Fedu%5Fsg%2FDocuments%2Fopensource%2FMOSE%5Frelease&ga=1)
