@@ -107,28 +107,28 @@ model = dict(
 ############### video res
 
 # ReVOS需要手动下载, 因为下载数据包不全
-data_root_revos = '/home/volume_shared/share_datasets/ReVOS/'
+data_root_revos = '/home/volume_shared/share_datasets/video_datas/ReVOS/'
 video_revos_image_folder = data_root_revos + 'JPEGImages'
 video_revos_expression_file = data_root_revos + 'meta_expressions_train_.json'
 video_revos_box_file = 'mask_to_box/revos_bbox.json' # home目录下
 
-data_root_mevis = '/home/volume_shared/share_datasets/MeViS/MeViS_release/train/'
+data_root_mevis = '/home/volume_shared/share_datasets/video_datas/mevis/train/'
 video_mevis_image_folder = data_root_mevis + 'JPEGImages'
 video_mevis_expression_file = data_root_mevis + 'meta_expressions.json'
 video_mevis_box_file = 'mask_to_box/mevis_bbox.json' 
 
-data_root_refytvos = '/home/volume_shared/share_datasets/Ref-Youtube-VOS/'
+data_root_refytvos = '/home/volume_shared/share_datasets/video_datas/rvos/'
 video_refytvos_image_folder = data_root_refytvos + 'train/JPEGImages/'
-video_refytvos_expression_file = 'ref_ytvos_expressions.json' # 注意, ref_ytvos的expression需要用改动后的, 原始的没有anno_id
+video_refytvos_expression_file = 'ref_ytvos_expressions.json' # 注意, ref_ytvos的expression需要用改动后的, 因为原始版本没有anno_id
 video_refytvos_box_file = 'mask_to_box/ref_ytvos_bbox.json'
 
 # relative relation
-video_relative_image_folder = '/tmp/all_vos2/'
+video_relative_image_folder = '/home/volume_shared/share_datasets/video_datas/all_vos2/'
 video_relative_expression_file = 'all_vos2_relative_step2.json'
 video_relative_box_file = 'mask_to_box/all_vos2_relative_box.json'
 
 # absolute relation
-video_absolute_image_folder = '/tmp/all_vos2/'
+video_absolute_image_folder = '/home/volume_shared/share_datasets/video_datas/all_vos2/'
 video_absolute_expression_file = 'all_vos2_absolute_step2.json'
 video_absolute_box_file = 'mask_to_box/all_vos2_absolute_box.json'
 
