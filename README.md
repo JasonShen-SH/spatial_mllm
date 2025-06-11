@@ -43,7 +43,7 @@ video_datas_rvos.zip
 [ReVOS](https://mailsjlueducn-my.sharepoint.com/personal/yancl9918_mails_jlu_edu_cn/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fyancl9918%5Fmails%5Fjlu%5Fedu%5Fcn%2FDocuments%2Fdataset%2Frevos%5Feccv%5Fdataset%2FReVOS&ga=1)，
 并与上述文件放置在同一位置
 
-除此之外，空间位置关系数据集存储路径为all_vos2, 我将其打包上传到了百度网盘
+除此之外，空间位置关系数据集存储路径为all_vos2, 我将其打包上传到了[Google Drive](https://drive.google.com/drive/folders/19ykdsNlPROkmI1iXnZc2monoQFB0_QMi?usp=drive_link)
 
 最终期待的数据结构为:
 ```shell
@@ -55,8 +55,8 @@ video_datas_rvos.zip
 └── video_datas/
     ├── mevis/
     └── rvos/
-    └── ReVOS/ # 手动下载
-    └── all_vos2/ # 手动下载
+    └── ReVOS/ # 手动下载(OneDrive链接)
+    └── all_vos2/ # 手动下载(Google Drive, 我们自己的)
 ```
 
 若修改了存放路径，请在配置文件 projects/llava_sam2/configs/sa2va_8b_spatial.py 中同步修改
