@@ -62,11 +62,7 @@ warmup_ratio = 0.05
 save_steps = 1000
 save_total_limit = 2  # Maximum checkpoints to keep (-1 means unlimited)
 
-# special_tokens = ['[SEG]', '<p>', '</p>', '<vp>', '</vp>', '[RELATION]']
-# special_tokens = ['[SEG]', '<p>', '</p>', '<vp>', '</vp>']
-# special_tokens = ['[BOX]', '<p>', '</p>', '<vp>', '</vp>']
 special_tokens = ['<box_sep>', '<no_box>', '<next>', '<p>', '</p>', '<vp>', '</vp>']
-# special_tokens = ['<p>', '</p>', '<vp>', '</vp>']  
 
 tokenizer = dict(
     type=AutoTokenizer.from_pretrained,

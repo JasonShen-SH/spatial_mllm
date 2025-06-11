@@ -25,31 +25,30 @@ import pdb
 
 BOX_QUESTIONS = [
     "Detect and locate the {class_name} in this video.",
-    "Track the {class_name} throughout this video with bounding boxes.",
+    "Track the {class_name} with bounding boxes.",
     "What is {class_name} in this video? Output the bounding boxes.",
 
     "Can you identify and locate the {class_name} in this video?",
-    "Track the {class_name} in this video",
+    "Track the {class_name}",
 
     "Identify and locate the {class_name} in this video with bounding boxes.",
     "Where is the {class_name} in this video? Identify and locate it.",
     "Can you highlight the {class_name} in this video with bounding boxes?",
 
-    "Could you track and locate the {class_name} in this video?",
-    "Identify and locate the {class_name} within this video",
+    "Could you track and locate the {class_name}?",
+    "Identify and locate the {class_name} in this video",
     "Where is the {class_name} in this video? Detect and locate it.",
     "Can you detect, track and locate the {class_name}?",
 ]
 
 BOX_ANSWER_LIST = [
-    "The object locations are <box>{coords}</box>.",
+    "Sure, the object locations are <box>{coords}</box>.",
     "The object trajectories are <box>{coords}</box>.",
     "The object positions in this video are <box>{coords}</box>.",
     "The tracking results are <box>{coords}</box>.",
     "The object movements throughout this video are <box>{coords}</box>.",
     "Here are the object trajectories: <box>{coords}</box>.",
     "The tracked positions are <box>{coords}</box>.",
-    "The object path in the video is <box>{coords}</box>.",
     "Sure, the object trajectories are <box>{coords}</box>.",
 ]
 

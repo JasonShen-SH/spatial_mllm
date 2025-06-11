@@ -140,13 +140,15 @@ class ReferSegmDataset_box(RefCocoDataset):
         width, height = image.size
 
         # masks, phrases = [], []
-        bboxes, phrases = [], []
+        # bboxes, phrases = [], []
+        phrases = []
         instances, text = ann_info['instances'], ann_info['text']
 
         # 重采样
         index = np.random.choice(range(len(instances)), self.num_classes_per_sample, replace=True)
+        bboxes = [[] for _ in range(len(index))]
         
-        for idx in index:
+        for real_idx, idx in enumerate(index):
             inst = instances[idx]
             phrase = text[idx].lower()
             if '.' == phrase[-1]:
@@ -154,25 +156,40 @@ class ReferSegmDataset_box(RefCocoDataset):
             phrases.append(phrase)
             
             binary_mask = np.zeros((height, width), dtype=np.uint8)
-            for seg in inst["mask"]:
+            for seg_idx, seg in enumerate(inst["mask"]):
                 rles = mask_utils.frPyObjects([seg], height, width)
                 m = mask_utils.decode(rles)
                 m = m.astype(np.uint8)
+                # 计算box
+                y_indices, x_indices = np.where(m.squeeze() > 0)
+                x_min, x_max = max(0, np.min(x_indices)), min(width, np.max(x_indices))
+                y_min, y_max = max(0, np.min(y_indices)), min(height, np.max(y_indices))
+                if seg_idx == 0:
+                    bboxes[real_idx] = [x_min / width, y_min / height, x_max / width, y_max / height]
+                elif seg_idx == 1:
+                    tmp = bboxes[real_idx]
+                    bboxes[real_idx] = []
+                    bboxes[real_idx].append([tmp[0], tmp[1], tmp[2], tmp[3]])
+                    bboxes[real_idx].append([x_min / width, y_min / height, x_max / width, y_max / height])
+                    del tmp
+                else:
+                    bboxes[real_idx].append([x_min / width, y_min / height, x_max / width, y_max / height])
+                
                 binary_mask += m.squeeze()
                 
             # masks.append(binary_mask)
             
-            y_indices, x_indices = np.where(binary_mask > 0)
-            assert len(y_indices) > 0 and len(x_indices) > 0
-            x_min, x_max = np.min(x_indices), np.max(x_indices)
-            y_min, y_max = np.min(y_indices), np.max(y_indices)
-            normalized_bbox = [
-                x_min / width,    # x1
-                y_min / height,   # y1
-                x_max / width,    # x2
-                y_max / height    # y2
-            ]
-            bboxes.append(normalized_bbox)
+            # y_indices, x_indices = np.where(binary_mask > 0)
+            # assert len(y_indices) > 0 and len(x_indices) > 0
+            # x_min, x_max = np.min(x_indices), np.max(x_indices)
+            # y_min, y_max = np.min(y_indices), np.max(y_indices)
+            # normalized_bbox = [
+            #     x_min / width,    # x1
+            #     y_min / height,   # y1
+            #     x_max / width,    # x2
+            #     y_max / height    # y2
+            # ]
+            # bboxes.append(normalized_bbox)
         
         # pdb.set_trace()
 
@@ -188,7 +205,7 @@ class ReferSegmDataset_box(RefCocoDataset):
             conversation.append({'from': 'gpt', 'value': answer})
             
         # masks = torch.stack([torch.from_numpy(mask) for mask in masks], dim=0)
-        bboxes = torch.tensor(bboxes, dtype=torch.float32)
+        # bboxes = torch.tensor(bboxes, dtype=torch.float32)
         # pdb.set_trace() 
 
         ann_info.update({
@@ -283,11 +300,18 @@ class ReferSegmDataset_box(RefCocoDataset):
                 input += msg['value'].strip()
             elif msg['from'] == 'gpt':
                 bbox = bboxes[bbox_idx]
-                coords_str = f"{bbox[0]:.4f}, {bbox[1]:.4f}, {bbox[2]:.4f}, {bbox[3]:.4f}"
+                if type(bbox[0]) is list:
+                    num_boxes = len(bbox)
+                    coords_str = ""
+                    for i in range(num_boxes):
+                        coords_str += f"{bbox[i][0]:.4f}, {bbox[i][1]:.4f}, {bbox[i][2]:.4f}, {bbox[i][3]:.4f}"
+                        if i < num_boxes - 1:
+                            coords_str += "<box_sep>"
+                else:
+                    coords_str = f"{bbox[0]:.4f}, {bbox[1]:.4f}, {bbox[2]:.4f}, {bbox[3]:.4f}"
                 msg_value = msg['value'].replace('{coords}', coords_str)
                 out_conversation.append({
                     'input': input,
-                    # 'output': msg_value.strip()
                     'output': msg_value.rstrip('.') + '<single_img>.'
                 })
                 input = ''

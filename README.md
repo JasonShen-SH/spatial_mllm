@@ -29,7 +29,6 @@ git lfs pull
 ```
 
 
-
 下载完成后, 只需要解压其中的
 ```shell
 ref_seg_coco.zip, 
