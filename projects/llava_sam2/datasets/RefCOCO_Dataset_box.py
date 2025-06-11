@@ -162,8 +162,15 @@ class ReferSegmDataset_box(RefCocoDataset):
                 m = m.astype(np.uint8)
                 # 计算box
                 y_indices, x_indices = np.where(m.squeeze() > 0)
-                x_min, x_max = max(0, np.min(x_indices)), min(width, np.max(x_indices))
-                y_min, y_max = max(0, np.min(y_indices)), min(height, np.max(y_indices))
+                if len(x_indices) == 0:
+                    print("very strange case, image: ", ann_info['img_path'], " text: ", ann_info['text'])
+                    # 给一个小的默认box（比如在中心点周围1%的区域），防止报错
+                    x_min, x_max = int(width * 0.495), int(width * 0.505)
+                    y_min, y_max = int(height * 0.495), int(height * 0.505)       
+                else:
+                    # 正常情况
+                    x_min, x_max = max(0, np.min(x_indices)), min(width, np.max(x_indices))
+                    y_min, y_max = max(0, np.min(y_indices)), min(height, np.max(y_indices))
                 if seg_idx == 0:
                     bboxes[real_idx] = [x_min / width, y_min / height, x_max / width, y_max / height]
                 elif seg_idx == 1:
