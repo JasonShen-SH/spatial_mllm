@@ -165,27 +165,36 @@ class ReferSegmDataset_box_point(RefCocoDataset):
                 m = m.astype(np.uint8)
                 # 计算box
                 y_indices, x_indices = np.where(m.squeeze() > 0)
-                x_min, x_max = max(0, np.min(x_indices)), min(width, np.max(x_indices))
-                y_min, y_max = max(0, np.min(y_indices)), min(height, np.max(y_indices))
-                # 计算center
-                dist_transform = cv2.distanceTransform(m.squeeze(), cv2.DIST_L2, 5)
-                min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(dist_transform)
-                normalized_x = max_loc[0] / width
-                normalized_y = max_loc[1] / height
-                ##########################
-                # 50%概率添加抖动
-                if random.random() < 0.5:
-                    jitter = 0.01
-                    jitter_normalized_x = np.clip(normalized_x + random.uniform(-jitter, jitter), 0, 1)
-                    jitter_normalized_y = np.clip(normalized_y + random.uniform(-jitter, jitter), 0, 1)
-                    pixel_x = int(jitter_normalized_x * width)
-                    pixel_y = int(jitter_normalized_y * height)
-                    pixel_x = min(max(pixel_x, 0), width - 1)
-                    pixel_y = min(max(pixel_y, 0), height - 1)
-                    if m.squeeze()[pixel_y, pixel_x] > 0: # 确保在mask内
-                        normalized_x = jitter_normalized_x
-                        normalized_y = jitter_normalized_y
-                ##########################
+                if len(x_indices) == 0:
+                    print("very strange mask, its image: ", ann_info['img_path'], " text: ", ann_info['text'])
+                    # 给一个小的默认box（比如在中心点周围1%的区域）
+                    x_min, x_max = int(width * 0.495), int(width * 0.505)
+                    y_min, y_max = int(height * 0.495), int(height * 0.505)       
+                    # 图像中心点          
+                    normalized_x = 0.5
+                    normalized_y = 0.5
+                else:
+                    x_min, x_max = max(0, np.min(x_indices)), min(width, np.max(x_indices))
+                    y_min, y_max = max(0, np.min(y_indices)), min(height, np.max(y_indices))
+                    # 计算center
+                    dist_transform = cv2.distanceTransform(m.squeeze(), cv2.DIST_L2, 5)
+                    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(dist_transform)
+                    normalized_x = max_loc[0] / width
+                    normalized_y = max_loc[1] / height
+                    ##########################
+                    # 50%概率, 给point添加抖动
+                    if random.random() < 0.5:
+                        jitter = 0.01
+                        jitter_normalized_x = np.clip(normalized_x + random.uniform(-jitter, jitter), 0, 1)
+                        jitter_normalized_y = np.clip(normalized_y + random.uniform(-jitter, jitter), 0, 1)
+                        pixel_x = int(jitter_normalized_x * width)
+                        pixel_y = int(jitter_normalized_y * height)
+                        pixel_x = min(max(pixel_x, 0), width - 1)
+                        pixel_y = min(max(pixel_y, 0), height - 1)
+                        if m.squeeze()[pixel_y, pixel_x] > 0: # 确保在mask内
+                            normalized_x = jitter_normalized_x
+                            normalized_y = jitter_normalized_y
+                    ##########################
                 if seg_idx == 0:
                     points[real_idx] = [normalized_x, normalized_y]
                     bboxes[real_idx] = [x_min / width, y_min / height, x_max / width, y_max / height]
